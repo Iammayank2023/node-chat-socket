@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Peer-to-Peer Chat</title>
+</head>
+
+<body>
+    <input id="userId" placeholder="Your User ID" /><button id="authenticate">Authenticate</button>
+    <input id="recipientId" placeholder="Recipient User ID" />
+    <input id="message" placeholder="Message" /><button id="send">Send</button>
+    <ul id="messages"></ul>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(function () {
+            var socket = io();
+
+            $('#authenticate').click(function () {
+                var userId = $('#userId').val();
+                socket.emit('authenticate', userId);
+            });
+
+            $('#send').click(function () {
+                var recipientId = $('#recipientId').val();
+                var message = $('#message').val();
+                socket.emit('privateMessage', recipientId, message);
+                $('#messages').append('<li>' + message + '</li>');
+            });
+
+            socket.on('privateMessage', function (message) {
+                $('#messages').append('<li>' + message + '</li>');
+            });
+        });
+    </script>
+</body>
+
+</html>
